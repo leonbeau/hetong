@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- namespace：命名空间，用于隔离sql-->
+<mapper namespace="dao.ProductDao">
+   <resultMap type="entity.Product" id="ProductResult" >
+      <result property="productId" column="product_id"/>
+      <result property="productName" column="product_name"/>
+      <result property="productPrice" column="product_price"/>
+      <result property="productDesc" column="product_desc"/>
+      <result property="storeId" column="store_id"/>
+      <result property="productImage" column="product_image"/>
+   </resultMap>
+   <!-- <select id="findUserByUsername" parameterType="String" resultType="cn.zhku.jsj.mybatis.entity.User">
+        select * from user where username like '%%'
+    </select>-->
+   <select id="getSortMark" resultType="java.util.HashMap" parameterType="map">
+      select product.product_id as id,product_name as Pname,product_price as price,
+      product_desc as Pdesc,product_comment.comment_mark as comentMark,product_image as src from product
+      inner join product_comment on(product.product_id=product_comment.product_id and store_id=#{storeId}) order by comentMark desc
+      <if test="start!=null and limit!=null">
+         limit #{start},#{limit}
+      </if>
+   </select>
+   <select id="getSortMarkCount" resultType="int" parameterType="map">
+        select count(*) from product
+        inner join product_comment
+        on(product.product_id=product_comment.product_id and store_id=#{storeId})
+        order by comentMark desc
+    </select>
+   <select id="getProductCount" resultType="int" parameterType="map">
+     select count(*) from product inner join product_comment on(product.product_id=product_comment.product_id and store_id=#{storeId})
+   </select>
+   <select id="getProduct" resultType="java.util.HashMap" parameterType="map">
+      select product.product_id as id,product_name as Pname,product_price as price,
+      product_desc as Pdesc,product_comment.comment_mark as comentMark,product_image as src from product
+      inner join product_comment on(product.product_id=product_comment.product_id and store_id=#{storeId})
+      <if test="start!=null and limit!=null">
+         limit #{start},#{limit}
+      </if>
+   </select>
+<!--   <select id="getAllProduct" resultMap="ProductResult" parameterType="int">
+      select * from product where store_id=#{storeId} order by product_id
+   </select>-->
+
+   <select id="getSortPrice" resultType="java.util.HashMap" parameterType="map">
+      select product.product_id as id,product_name as Pname,product_price as price,
+      product_desc as Pdesc,product_comment.comment_mark as comentMark,product_image as src from product
+      inner join product_comment on(product.product_id=product_comment.product_id and store_id=#{storeId}) order by price
+      <if test="flag='true'">
+         desc
+      </if>
+      <if test="flag='false'">
+         asc
+      </if>
+      <if test="start!=null and limit!=null">
+         limit #{start},#{limit}
+      </if>
+   </select>
+   <select id="getSortPriceCount" resultType="int" parameterType="map">
+      select count(*) from product
+      inner join product_comment on(product.product_id=product_comment.product_id and store_id=#{storeId})
+   </select>
+   <select id="getOrder" resultType="java.util.HashMap" parameterType="map">
+      select product.product_id as id,product_name as Pname,product.product_price as price,product.product_desc as Pdesc,orderitem.count,
+      product.product_image as src from product inner join orderitem on(product.product_id=orderitem.product_id and product.store_id=#{storeId}) order by orderitem.count desc
+      <if test="start!=null and limit!=null">
+         limit #{start},#{limit}
+      </if>
+   </select>
+   <select id="getOrderCount" resultType="int" parameterType="map">
+      select count(*) from product inner join orderitem on(product.product_id=orderitem.product_id and product.store_id=#{storeId}) order by orderitem.count desc
+   </select>
+</mapper>

@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- namespace：命名空间，用于隔离sql-->
+<mapper namespace="dao.ProductCommentDao">
+    <resultMap id="productCommentResult" type="entity.ProductComment" autoMapping="true">
+        <result property="productCommentId" column="product_comment_id"></result>
+        <result property="userId" column="user_id"/>
+        <result property="productId" column="product_id"/>
+        <result property="comment" column="comment"/>
+        <result property="productMark" column="product_mark"/>
+        <result property="createDate" column="create_time"/>
+    </resultMap>
+
+    <select id="getComment" resultType="java.util.HashMap" parameterType="map">
+        select product_comment_id as id,user.user_name as userName,product.product_name as productName,
+        product_comment.comment as Pcomment,store_comment.comment as Scomment,comment_mark,create_date
+        from product_comment
+        inner join user on(product_comment.user_id=user.user_id)
+        inner  join product on(product_comment.product_id=product.product_id and product.store_id=#{storeId})
+        inner join store_comment on(store_comment.store_id=product.store_id and store_comment.user_id=product_comment.user_id)
+        order by product_comment_id desc
+        <if test="start!=null and limit!=null">
+            limit #{start},#{limit}
+        </if>
+    </select>
+    <select id="getHighComment" resultType="java.util.HashMap" parameterType="map">
+    select product_comment_id as id,user.user_name as userName,product.product_name as productName,
+    product_comment.comment as Pcomment,store_comment.comment as Scomment,comment_mark,create_date
+    from product_comment
+    inner join user on(product_comment.user_id=user.user_id and <![CDATA[product_comment.comment_mark > 2]]>)
+    inner  join product on(product_comment.product_id=product.product_id and product.store_id=#{storeId})
+    inner join store_comment on(store_comment.store_id=product.store_id and store_comment.user_id=product_comment.user_id)
+    order by product_comment_id desc
+    <if test="start!=null and limit!=null">
+        limit #{start},#{limit}
+    </if>
+</select>
+    <select id="getHighCommentCount" resultType="int" parameterType="map">
+        select count(*)  from product_comment
+        inner join user on(product_comment.user_id=user.user_id and <![CDATA[product_comment.comment_mark > 2]]>)
+        inner  join product on(product_comment.product_id=product.product_id and product.store_id=#{storeId})
+        inner join store_comment on(store_comment.store_id=product.store_id and store_comment.user_id=product_comment.user_id)
+        order by product_comment_id desc
+    </select>
+
+
+    <select id="getLowComment" resultType="java.util.HashMap" parameterType="map">
+        select product_comment_id as id,user.user_name as userName,product.product_name as productName,
+        product_comment.comment as Pcomment,store_comment.comment as Scomment,comment_mark,create_date
+        from product_comment
+        inner join user on(product_comment.user_id=user.user_id and  <![CDATA[product_comment.comment_mark<= 2]]>)
+        inner  join product on(product_comment.product_id=product.product_id and product.store_id=#{storeId})
+        inner join store_comment on(store_comment.store_id=product.store_id and store_comment.user_id=product_comment.user_id)
+        order by product_comment_id desc
+        <if test="start!=null and limit!=null">
+            limit #{start},#{limit}
+        </if>
+    </select>
+    <select id="getLowCommentCount" resultType="int" parameterType="map">
+        select count(*)  from product_comment
+        inner join user on(product_comment.user_id=user.user_id and <![CDATA[product_comment.comment_mark<= 2]]>)
+        inner  join product on(product_comment.product_id=product.product_id and product.store_id=#{storeId})
+        inner join store_comment on(store_comment.store_id=product.store_id and store_comment.user_id=product_comment.user_id)
+        order by product_comment_id desc
+    </select>
+
+    <select id="getCommentCount" resultType="int" parameterType="int">
+        select count (*) from product_comment
+        inner join user on(product_comment.user_id=user.user_id)
+        inner  join product on(product_comment.product_id=product.product_id and product.store_id=#{storeId})
+        order by product_comment_id desc
+    </select>
+    <select id="search" resultType="java.util.HashMap" parameterType="map">
+        <if test="keywords!=null and keywords.trim()!=''">
+            select product.product_id as pid,store.store_name as storeName,product_name as productName,
+            product_price as price,product_comment.comment_mark as comMark from product
+            inner join store on(product.store_id=store.store_id)
+            inner join product_comment on(product.product_id=product_comment.product_id)
+            where store.store_name like CONCAT(CONCAT('%',#{keyword},'%'))
+            <if test="start!=null and limit!=null">
+                limit #{start},#{limit}
+            </if>
+        </if>
+    </select>
+    <select id="getTotalSearch" resultType="int" parameterType="map">
+        <if test="keywords!=null and keywords.trim()!=''">
+            select count(*) from product
+            inner join store on(product.store_id=store.store_id)
+            inner join product_comment on(product.product_id=product_comment.product_id)
+            where store.store_name like CONCAT(CONCAT('%',#{keyword},'%'))
+        </if>
+    </select>
+</mapper>

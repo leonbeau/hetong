@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="dao.ContractCountDao">
+    <resultMap id="ContractCountResult" type="entity.ContractCount">
+        <result property="id" column="id"></result>
+        <result property="contractId" column="contractId"></result>
+        <result property="contractName" column="contractName"></result>
+        <result property="createTime" column="createTime"></result>
+        <result property="contractTypeId" column="contractTypeId"></result>
+        <result property="userId" column="userId"></result>
+        <result property="zheKou" column="zheKou"></result>
+        <result property="partyA" column="partyA"></result>
+        <result property="contractCost" column="contractCost"></result>
+        <result property="contractModelId" column="contractModelId"></result>
+        <result property="cityId" column="cityId"></result>
+        <result property="salesman" column="salesman"></result>
+        <result property="checkState" column="checkState"></result>
+        <result property="louCeng" column="louCeng"></result>
+        <result property="zhuGuan" column="zhuGuan"></result>
+        <result property="keHu" column="keHu"></result>
+        <result property="xueYuan" column="xueYuan"></result>
+        <result property="zhuangTai" column="zhuangTai"></result>
+        <result property="cpuXingHao" column="cpuXingHao"></result>
+        <result property="cpuKeShu" column="cpuKeShu"></result>
+        <result property="teShuPeiJian" column="teShuPeiJian"></result>
+        <result property="fangAnJia" column="fangAnJia"></result>
+        <result property="xiaDanTime" column="xiaDanTime"></result>
+        <result property="xiaDanZhouQi" column="xiaDanZhouQi"></result>
+
+    </resultMap>
+    <select id="findAllContract" resultType="java.util.Map">
+        select * from contractCount
+    </select>
+    <update id="updateContract" parameterType="java.util.Map">
+
+         update contractCount set zheKou=#{zheKou},salesman=#{salesman},louCeng=#{louCeng},zhuGuan=#{zhuGuan},keHu=#{keHu},partyA=#{partyA},xueYuan=#{xueYuan},zhuangTai=#{zhuangTai},cpuXingHao=#{cpuXingHao},cpuKeShu=#{cpuKeShu},teShuPeiJian=#{teShuPeiJian},fangAnJia=#{fangAnJia},contractCost=#{contractCost},xiaDanTime=#{xiaDanTime},xiaDanZhouQi=#{xiaDanZhouQi} where id=#{id}
+    </update>
+    <delete id="deleteById" parameterType="java.lang.Integer">
+       delete from contractCount where id=#{id}
+    </delete>
+    <select id="findContractByTime" parameterType="java.lang.String" resultType="java.util.Map">
+        select * from contractCount where createTime between #{startTime} and #{endTime}
+    </select>
+    <insert id="addContract" parameterType="java.util.Map">
+        INSERT into contractCount(contractId, contractName, createTime, contractTypeId, userId, zheKou, partyA, contractCost, contractModelId, cityId, salesman, checkState, louCeng, zhuGuan, keHu, xueYuan, zhuangTai, cpuXingHao, cpuKeShu, teShuPeiJian, fangAnJia, xiaDanTime, xiaDanZhouQi, costChn) VALUES
+(#{contractId},#{contractName},#{createTime},#{contractTypeId},#{userId},#{zheKou},#{partyA},#{contractCost},#{contractModelId},#{cityId},#{salesman},#{checkState},#{louCeng},#{zhuGuan},#{keHu},#{xueYuan},#{zhuangTai},#{cpuXingHao},#{cpuKeShu},#{teShuPeiJian},#{fangAnJia},#{xiaDanTime},#{xiaDanZhouQi},#{costChn})
+
+    </insert>
+</mapper>
